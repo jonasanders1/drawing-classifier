@@ -1,0 +1,50 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+
+
+
+.color-box-container{
+  display: flex;
+  justify-content: flex-end;
+  gap: .3rem;
+  margin-bottom: .3rem;
+}
+
+
+.color-box{
+  border: none;
+  width: 25px;
+  aspect-ratio: 1;
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  border-radius: .2rem;
+}
+
+.color-box:hover{
+  opacity: 1;
+}
+
+.color-box-selected{
+  opacity: 1;
+}
+
+.color-box-green{
+  background-color: #4CAF50;
+}
+.color-box-blue{
+  background-color: #2196F3;
+}
+.color-box-red{
+  background-color: #F44336;
+}
+.color-box-yellow{
+  background-color: #FFC107;
+} 
+
+
