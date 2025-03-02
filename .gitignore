@@ -32,3 +32,4 @@ __pycache__
 *.pyd
 *.pyw
 
+Server/npy_files/*.npy
