@@ -7,7 +7,15 @@
 
 .app{
   display: flex;
+  flex-direction: column;
   gap: 1rem;
+  color: #c4c4c4;
+}
+
+.highlight{
+  display: inline-block;
+  color: rgb(230, 230, 230); 
+  font-weight: 700;
 }
 
 .drawing-container{
