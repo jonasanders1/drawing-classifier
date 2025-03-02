@@ -32,4 +32,5 @@ __pycache__/
 *.pyd
 *.pyw
 
+# Large data files
 Server/npy_files/*.npy
