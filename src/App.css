@@ -28,3 +28,15 @@
 .result-container{
   flex: 1;
 }
+
+.main-container{
+  display: flex;
+  gap: 1rem;
+}
+
+
+@media (max-width: 900px) {
+  .main-container{
+    flex-direction: column;
+  }
+}

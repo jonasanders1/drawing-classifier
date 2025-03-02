@@ -1,10 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useColor } from '../context/colorContext'
-
+import eraserCursor from '@/assets/crosshairs/eraser-big.png'
+import pencilCursor from '@/assets/crosshairs/pencil-big.png'
 const Canvas = ({ ...props }) => {
+
   const { selectedColor } = useColor();
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [isDrawing, setIsDrawing] = useState(false)
+  const [isErasing, setIsErasing] = useState(false)
   const [history, setHistory] = useState<ImageData[]>([])
   const [currentStep, setCurrentStep] = useState(-1)
 
@@ -25,7 +28,14 @@ const Canvas = ({ ...props }) => {
     setCurrentStep(0)
   }, []) // Empty dependency array means this runs once on mount
 
-  // Color change effect
+  // Add this effect for eraser toggle
+  useEffect(() => {
+    const toggleEraser = () => setIsErasing(prev => !prev);
+    document.addEventListener('canvas-toggle-eraser', toggleEraser);
+    return () => document.removeEventListener('canvas-toggle-eraser', toggleEraser);
+  }, []);
+
+  // Modify the color change effect to handle eraser
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -35,18 +45,16 @@ const Canvas = ({ ...props }) => {
     })
     if (!context) return
     
-    // Improve line quality
-    context.strokeStyle = selectedColor
-    context.lineWidth = 1
+    context.strokeStyle = isErasing ? '#ffffff' : selectedColor
+    context.lineWidth = isErasing ? 20 : 1
     context.lineCap = 'round'
     context.lineJoin = 'round'
     context.imageSmoothingEnabled = true
     context.imageSmoothingQuality = 'high'
     
-    // Add shadow for smoother appearance
-    context.shadowBlur = 1
-    context.shadowColor = selectedColor
-  }, [selectedColor])
+    context.shadowBlur = isErasing ? 0 : 1
+    context.shadowColor = isErasing ? '#ffffff' : selectedColor
+  }, [selectedColor, isErasing])
 
   useEffect(() => {
     const handleUndo = () => undo();
@@ -168,7 +176,12 @@ const Canvas = ({ ...props }) => {
       onMouseMove={draw}
       onMouseUp={stopDrawing}
       onMouseOut={stopDrawing}
-      style={{ borderRadius: '.25rem' }}
+      style={{ 
+        borderRadius: '.25rem',
+        cursor: isErasing 
+          ? `url('${eraserCursor}') 0 32, crosshair`
+          : `url('${pencilCursor}') 0 32, crosshair`
+      }}
       {...props}
     />
   )

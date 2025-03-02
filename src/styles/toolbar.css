@@ -22,6 +22,12 @@
   border-radius: .25rem;
   transition: background-color 0.2s ease;
 }
+.toolbar-button.active{
+  background-color: #909090;
+}
 .toolbar-button:hover{
   background-color: #616161;
+}
+.toolbar-button.eraser {
+  padding: 0 0.5rem;
 }

@@ -1,4 +1,4 @@
-import placeholder from "../../images/placeholder.png";
+import placeholder from "../assets/images/placeholder.png";
 import '../styles/result.css'
 
 const getColorForPercentage = (percentage: number) => {
@@ -65,11 +65,11 @@ const Result = () => {
         <div 
           className="result-percentage"
           style={{ 
-            height: `${80}%`,
-            backgroundColor: getColorForPercentage(80)
+            height: `${70}%`,
+            backgroundColor: getColorForPercentage(70)
           }}
         >
-          80%
+          70%
         </div>
       </div>
       <div className="image-wrapper">

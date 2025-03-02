@@ -23,16 +23,15 @@ function App() {
           drawing!
         </p>
       </div>
-      <div style={{ display: "flex", gap: "1rem" }}>
+      <main className="main-container">
         <div className="drawing-container">
           <Toolbar />
-
           <Canvas />
         </div>
         <div className="result-container">
           <Result />
         </div>
-      </div>
+      </main>
     </div>
   );
 }

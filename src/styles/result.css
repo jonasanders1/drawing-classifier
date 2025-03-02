@@ -1,6 +1,6 @@
 .reference-images {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   max-width: 100%;
   gap: 0.5rem;
 }
@@ -8,6 +8,9 @@
 .image-wrapper {
   position: relative;
   aspect-ratio: 1;
+  width: 100%;
+  border-radius: 0.25rem;
+  overflow: hidden;
 }
 
 .result-percentage {
@@ -22,12 +25,12 @@
   justify-content: center;
   transition: height 0.3s ease;
 }
+
 .reference-image {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 0.25rem;
   object-fit: cover;
 }
