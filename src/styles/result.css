@@ -1,0 +1,35 @@
+.reference-images{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 100%;
+  gap: .5rem;
+}
+
+.image-wrapper{
+  position: relative;
+  width: 96px;
+  aspect-ratio: 1;
+}
+
+.result-percentage{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: height 0.3s ease;
+}
+.reference-image{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: .25rem;
+  object-fit: cover;
+}
+
