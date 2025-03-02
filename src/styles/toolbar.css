@@ -8,8 +8,12 @@
   border-radius: .25rem;
   padding: 10px;
 }
-
-.undo-button{
+.toolbar-buttons{
+  height: 100%;
+  display: flex;
+  gap: .25rem;
+}
+.toolbar-button{
   cursor: pointer;
   height: 100%;
   color: #fff;
@@ -18,6 +22,6 @@
   border-radius: .25rem;
   transition: background-color 0.2s ease;
 }
-.undo-button:hover{
+.toolbar-button:hover{
   background-color: #616161;
 }

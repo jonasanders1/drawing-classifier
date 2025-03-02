@@ -3,9 +3,14 @@ import "../styles/toolbar.css";
 const Toolbar = () => {
   return (
     <div className="toolbar">
-      <button className="undo-button" onClick={() => document.dispatchEvent(new CustomEvent("canvas-undo"))}>
-        <span className="material-symbols-outlined">undo</span>
+      <div className="toolbar-buttons">
+      <button className="toolbar-button undo" onClick={() => document.dispatchEvent(new CustomEvent("canvas-undo"))}>
+        Undo
       </button>
+      <button className="toolbar-button redo" onClick={() => document.dispatchEvent(new CustomEvent("canvas-redo"))}>
+        Redo
+      </button>
+      </div>
       <ColorPicker />
     </div>
   )

@@ -50,9 +50,27 @@ const Canvas = ({ ...props }) => {
 
   useEffect(() => {
     const handleUndo = () => undo();
+    const handleRedo = () => redo();
+    // Handle both button click and keyboard shortcut
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        e.preventDefault(); // Prevent browser's default undo
+        handleUndo();
+      }
+    };
+
+    // Add both event listeners
     document.addEventListener('canvas-undo', handleUndo);
-    return () => document.removeEventListener('canvas-undo', handleUndo);
-  }, [currentStep]); // Add currentStep as dependency since undo uses it
+    document.addEventListener('canvas-redo', handleRedo);
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Clean up both listeners
+    return () => {
+      document.removeEventListener('canvas-undo', handleUndo);
+      document.removeEventListener('canvas-redo', handleRedo);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [currentStep]); // Keep currentStep in dependencies
 
   const startDrawing = (e: React.MouseEvent) => {
     const canvas = canvasRef.current
@@ -124,6 +142,18 @@ const Canvas = ({ ...props }) => {
       if (!context) return
 
       const newStep = currentStep - 1
+      context.putImageData(history[newStep], 0, 0)
+      setCurrentStep(newStep)
+    }
+  }
+  const redo = () => {
+    if (currentStep < history.length - 1) {
+      const canvas = canvasRef.current
+      if (!canvas) return
+      const context = canvas.getContext('2d')
+      if (!context) return
+
+      const newStep = currentStep + 1
       context.putImageData(history[newStep], 0, 0)
       setCurrentStep(newStep)
     }
