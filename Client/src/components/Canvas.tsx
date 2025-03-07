@@ -1,190 +1,167 @@
-import React, { useRef, useEffect, useState } from 'react'
-import { useColor } from '../context/colorContext'
-import eraserCursor from '@/assets/crosshairs/eraser-big.png'
-import pencilCursor from '@/assets/crosshairs/pencil-big.png'
-const Canvas = ({ ...props }) => {
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { useColor } from "../context/colorContext";
+import eraserCursor from "@/assets/crosshairs/eraser-big.png";
+import pencilCursor from "@/assets/crosshairs/pencil-big.png";
+import "../styles/canvas.css";
+import { usePredictions } from "../context/predictionContext";
+import { debounce } from "lodash";
 
+
+const Canvas = ({ ...props }) => {
   const { selectedColor } = useColor();
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [isDrawing, setIsDrawing] = useState(false)
-  const [isErasing, setIsErasing] = useState(false)
-  const [history, setHistory] = useState<ImageData[]>([])
-  const [currentStep, setCurrentStep] = useState(-1)
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [isErasing, setIsErasing] = useState(false);
+  const { predictions, setPredictions } = usePredictions();
+  const [lastPos, setLastPos] = useState<{x: number, y: number} | null>(null);
 
   // Initial setup effect - runs once
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const context = canvas.getContext('2d')
-    if (!context) return
-    
-    // Clear canvas only once on mount
-    context.fillStyle = '#ffffff'
-    context.fillRect(0, 0, context.canvas.width, context.canvas.height)
-    
-    // Save initial blank state
-    const initialState = context.getImageData(0, 0, canvas.width, canvas.height)
-    setHistory([initialState])
-    setCurrentStep(0)
-  }, []) // Empty dependency array means this runs once on mount
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return;
 
-  // Add this effect for eraser toggle
-  useEffect(() => {
-    const toggleEraser = () => setIsErasing(prev => !prev);
-    document.addEventListener('canvas-toggle-eraser', toggleEraser);
-    return () => document.removeEventListener('canvas-toggle-eraser', toggleEraser);
+    canvas.width = 500;
+    canvas.height = 500;
+
+    // Clear canvas with black background
+    context.fillStyle = "#000";
+    context.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
 
-  // Modify the color change effect to handle eraser
+  // Add eraser toggle effect
   useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const context = canvas.getContext('2d', {
-      willReadFrequently: true,
-      alpha: false
-    })
-    if (!context) return
-    
-    context.strokeStyle = isErasing ? '#ffffff' : selectedColor
-    context.lineWidth = isErasing ? 20 : 1
-    context.lineCap = 'round'
-    context.lineJoin = 'round'
-    context.imageSmoothingEnabled = true
-    context.imageSmoothingQuality = 'high'
-    
-    context.shadowBlur = isErasing ? 0 : 1
-    context.shadowColor = isErasing ? '#ffffff' : selectedColor
-  }, [selectedColor, isErasing])
+    const toggleEraser = () => setIsErasing((prev) => !prev);
+    document.addEventListener("canvas-toggle-eraser", toggleEraser);
+    return () =>
+      document.removeEventListener("canvas-toggle-eraser", toggleEraser);
+  }, []);
 
+  // Handle drawing settings
   useEffect(() => {
-    const handleUndo = () => undo();
-    const handleRedo = () => redo();
-    // Handle both button click and keyboard shortcut
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
-        e.preventDefault(); // Prevent browser's default undo
-        handleUndo();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return;
+
+    context.strokeStyle = isErasing ? "#000" : selectedColor;
+    context.lineWidth = isErasing ? 20 : 10;
+    context.lineCap = "round";
+    context.lineJoin = "round";
+  }, [selectedColor, isErasing]);
+
+  const sendCanvasData = useCallback(
+    debounce(async (canvas: HTMLCanvasElement) => {
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      if (!context) return;
+
+      // Get the raw image data
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const pixels = Array.from(imageData.data);
+
+      try {
+        const response = await fetch("http://127.0.0.1:5000/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            pixels: pixels,
+            width: canvas.width,
+            height: canvas.height,
+            predictions: predictions
+          }),
+        });
+
+        const result = await response.json();
+        if (result.predictions) {
+          setPredictions(result.predictions);
+        }
+      } catch (error) {
+        console.error("Failed to get predictions:", error);
+        // Fallback to mock predictions
+        const mockPredictions = predictions
+          .map((p) => ({
+            ...p,
+            percentage: Math.random() * 100,
+          }))
+          .sort((a, b) => b.percentage - a.percentage);
+        setPredictions(mockPredictions);
       }
-    };
+    }, 100),
+    [predictions, setPredictions]
+  );
 
-    // Add both event listeners
-    document.addEventListener('canvas-undo', handleUndo);
-    document.addEventListener('canvas-redo', handleRedo);
-    document.addEventListener('keydown', handleKeyDown);
-
-    // Clean up both listeners
+  // Clean up debounce on unmount
+  useEffect(() => {
     return () => {
-      document.removeEventListener('canvas-undo', handleUndo);
-      document.removeEventListener('canvas-redo', handleRedo);
-      document.removeEventListener('keydown', handleKeyDown);
+      sendCanvasData.cancel();
     };
-  }, [currentStep]); // Keep currentStep in dependencies
+  }, [sendCanvasData]);
 
   const startDrawing = (e: React.MouseEvent) => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const context = canvas.getContext('2d')
-    if (!context) return
+    setIsDrawing(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return;
+
+    // Start a new path when we begin drawing
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
     
-    setIsDrawing(true)
-    context.beginPath()
-    const rect = canvas.getBoundingClientRect()
-    const scaleX = canvas.width / rect.width
-    const scaleY = canvas.height / rect.height
-    
-    context.moveTo(
-      (e.clientX - rect.left) * scaleX,
-      (e.clientY - rect.top) * scaleY
-    )
-  }
+    context.beginPath();
+    context.moveTo(x, y);
+  };
 
   const draw = (e: React.MouseEvent) => {
-    if (!isDrawing) return
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const context = canvas.getContext('2d')
-    if (!context) return
-    
-    const rect = canvas.getBoundingClientRect()
-    const scaleX = canvas.width / rect.width
-    const scaleY = canvas.height / rect.height
-    
-    // Calculate new position
-    const x = (e.clientX - rect.left) * scaleX
-    const y = (e.clientY - rect.top) * scaleY
-    
-    // Draw with quadratic curve for smoother lines
-    context.quadraticCurveTo(
-      x - 1, y - 1,  // control point
-      x, y           // end point
-    )
-    context.stroke()
-    context.beginPath()
-    context.moveTo(x, y)
-  }
-
-  const saveState = () => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const context = canvas.getContext('2d')
-    if (!context) return
-
-    const currentState = context.getImageData(0, 0, canvas.width, canvas.height)
-    const newHistory = history.slice(0, currentStep + 1)
-    setHistory([...newHistory, currentState])
-    setCurrentStep(currentStep + 1)
-  }
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return;
+  
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+  
+    context.beginPath();
+    context.moveTo(lastPos?.x || x, lastPos?.y || y);
+    context.lineTo(x, y);
+    context.stroke();
+  
+    setLastPos({ x, y });
+    sendCanvasData(canvas);
+  };
 
   const stopDrawing = () => {
-    if (isDrawing) {
-      saveState()
-    }
-    setIsDrawing(false)
-  }
-
-  const undo = () => {
-    if (currentStep > 0) {
-      const canvas = canvasRef.current
-      if (!canvas) return
-      const context = canvas.getContext('2d')
-      if (!context) return
-
-      const newStep = currentStep - 1
-      context.putImageData(history[newStep], 0, 0)
-      setCurrentStep(newStep)
-    }
-  }
-  const redo = () => {
-    if (currentStep < history.length - 1) {
-      const canvas = canvasRef.current
-      if (!canvas) return
-      const context = canvas.getContext('2d')
-      if (!context) return
-
-      const newStep = currentStep + 1
-      context.putImageData(history[newStep], 0, 0)
-      setCurrentStep(newStep)
-    }
-  }
+    setIsDrawing(false);
+    setLastPos(null);
+    // Close the path when we stop drawing
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return;
+    context.closePath();
+  };
 
   return (
     <canvas
       ref={canvasRef}
-      width={600}
-      height={400}
       onMouseDown={startDrawing}
       onMouseMove={draw}
       onMouseUp={stopDrawing}
       onMouseOut={stopDrawing}
-      style={{ 
-        borderRadius: '.25rem',
-        cursor: isErasing 
+      className="canvas"
+      style={{
+        borderRadius: ".25rem",
+        cursor: isErasing
           ? `url('${eraserCursor}') 0 32, crosshair`
-          : `url('${pencilCursor}') 0 32, crosshair`
+          : `url('${pencilCursor}') 0 32, crosshair`,
       }}
       {...props}
     />
-  )
-}
+  );
+};
 
-export default Canvas
+export default Canvas;

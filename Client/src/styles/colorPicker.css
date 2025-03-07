@@ -10,7 +10,7 @@
   border: none;
   height: 100%;
   aspect-ratio: 1;
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: pointer;
   transition: opacity 0.3s ease;
   border-radius: 0.2rem;
@@ -21,6 +21,10 @@
 .color-box:active,
 .color-box:focus {
   opacity: 1;
+}
+
+.color-box-white {
+  background-color: #fff;
 }
 
 .color-box-green {

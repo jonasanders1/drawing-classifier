@@ -8,7 +8,7 @@ interface ColorContextType {
 const ColorContext = createContext<ColorContextType | undefined>(undefined);
 
 export function ColorProvider({ children }: { children: ReactNode }) {
-  const [selectedColor, setSelectedColor] = useState<string>('#4CAF50');
+  const [selectedColor, setSelectedColor] = useState<string>('#fff');
 
   return (
     <ColorContext.Provider value={{ selectedColor, setSelectedColor }}>

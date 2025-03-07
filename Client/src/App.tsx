@@ -1,14 +1,15 @@
 import "./App.css";
 import Canvas from "./components/Canvas";
 import Toolbar from "./components/Toolbar";
-import Result from "./components/Result";
+// import Result from "./components/Result";
+import Score from "./components/Score";
 
 function App() {
   return (
     <div className="app">
       <div>
         <h1>🎨 Test Your Drawing Against a Trained CNN Model 🧠</h1>
-        <p>
+        <div>
           This project features a{" "}
           <div className="highlight">Convolutional Neural Network (CNN)</div>{" "}
           build from{" "}
@@ -21,7 +22,7 @@ function App() {
           <br />
           Challenge the model and see how accurately it can predict your
           drawing!
-        </p>
+        </div>
       </div>
       <main className="main-container">
         <div className="drawing-container">
@@ -29,7 +30,8 @@ function App() {
           <Canvas />
         </div>
         <div className="result-container">
-          <Result />
+          <Score />
+          {/* <Result /> */}
         </div>
       </main>
     </div>

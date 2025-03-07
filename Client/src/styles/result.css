@@ -34,3 +34,71 @@
   height: 100%;
   object-fit: cover;
 }
+
+
+/* Score */
+
+.score-container {
+  padding: 1rem;
+  background-color: #333;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* height: 100%; */
+}
+
+.score-container table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #c4c4c4;
+}
+
+.score-container th,
+.score-container td {
+  padding: 0.4rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.score-container th{
+  padding: 1rem 0.5rem;
+}
+
+.score-container th {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: white;
+}
+
+.score-container th:last-child {
+  text-align: right;
+}
+
+.score-container tr:last-child td {
+  border-bottom: none;
+}
+
+.score-container tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.score-container td:last-child {
+  text-align: right;
+  font-weight: 500;
+}
+
+.score-class-name {
+  text-transform: capitalize;
+}
+
+.score-percentage {
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.score-container tbody tr:first-child {
+  color: white;
+  font-weight: bold;
+}
+
+
+
+

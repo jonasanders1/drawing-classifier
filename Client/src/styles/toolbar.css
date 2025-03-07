@@ -2,20 +2,27 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 30px;
+  height: 50px;
   background-color: #333;
   color: #fff;
   border-radius: .25rem;
   padding: 10px;
 }
 .toolbar-buttons{
-  height: 100%;
   display: flex;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
   gap: .25rem;
 }
+
 .toolbar-button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   height: 100%;
+  aspect-ratio: 1;
   color: #fff;
   background-color: #4b4b4b;
   border: none;
@@ -25,9 +32,10 @@
 .toolbar-button.active{
   background-color: #909090;
 }
+.toolbar-button.eraser.active{
+  background-color: #d16262;
+}
 .toolbar-button:hover{
   background-color: #616161;
 }
-.toolbar-button.eraser {
-  padding: 0 0.5rem;
-}
+

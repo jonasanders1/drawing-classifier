@@ -5,11 +5,16 @@ const ColorPicker = () => {
   const { selectedColor, setSelectedColor } = useColor();
 
   const handleColorClick = (color: string) => {
-    console.log("color", color);
     setSelectedColor(color);
   };
   return (
     <div className="color-box-container">
+      <button
+        className={`color-box color-box-white ${
+          selectedColor === "#fff" ? "color-box-selected" : ""
+        }`}
+        onClick={() => handleColorClick("#fff")}
+      ></button>
       <button
         className={`color-box color-box-green ${
           selectedColor === "#4CAF50" ? "color-box-selected" : ""
