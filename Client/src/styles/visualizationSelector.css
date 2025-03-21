@@ -1,0 +1,33 @@
+.visualization-selector {
+  display: flex;
+  gap: 0.5rem;
+  height: 50px;
+  margin-bottom: 0.5rem;
+}
+
+
+.selector-button {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #333;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  color: #c4c4c4;
+  transition: all 0.2s ease;
+}
+.selector-button-text{
+  font-size: 1.3rem;
+}
+
+.selector-button:hover {
+  background-color: #444;
+}
+
+.selector-button.active {
+  background-color: #555;
+  color: white;
+} 

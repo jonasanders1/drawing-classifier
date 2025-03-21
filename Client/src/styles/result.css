@@ -1,21 +1,47 @@
 .reference-images {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(93px, 1fr));
   max-width: 100%;
   gap: 0.5rem;
+}
+
+.card {
+  background-color: #333;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.header {
+  background-color: #2b2b2b;
+  border-bottom: 1px solid #565656;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .25rem;
+}
+
+.header h3 {
+  text-transform: capitalize;
+  color: white;
 }
 
 .image-wrapper {
   position: relative;
   aspect-ratio: 1;
-  width: 100%;
-  border-radius: 0.25rem;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 1rem;
+}
+
+.icon {
+  font-size: 5rem;
+  color: rgb(201, 201, 201);
 }
 
 .result-percentage {
   position: absolute;
-  bottom: 0;
+  bottom: 0rem;
   left: 0;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.7);
@@ -24,16 +50,9 @@
   align-items: center;
   justify-content: center;
   transition: height 0.3s ease;
+  padding-bottom: .5rem;
 }
 
-.reference-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
 
 
 /* Score */
