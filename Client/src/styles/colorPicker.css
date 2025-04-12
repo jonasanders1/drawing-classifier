@@ -1,0 +1,41 @@
+.color-box-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.3rem;
+  height: 100%;
+}
+
+.color-box {
+  border: none;
+  height: 100%;
+  aspect-ratio: 1;
+  opacity: 0.3;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  border-radius: 0.2rem;
+}
+
+.color-box:hover,
+.color-box-selected,
+.color-box:active,
+.color-box:focus {
+  opacity: 1;
+}
+
+.color-box-white {
+  background-color: #fff;
+}
+
+.color-box-green {
+  background-color: #4caf50;
+}
+.color-box-blue {
+  background-color: #2196f3;
+}
+.color-box-red {
+  background-color: #f44336;
+}
+.color-box-yellow {
+  background-color: #ffc107;
+}

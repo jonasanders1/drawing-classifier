@@ -1,0 +1,90 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Model files
+*.pth
+*.h5
+*.npy
+*.npz
+*.pkl
+Server/models/
+Server/npy_files/
+
+# Node
+node_modules/
+dist/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# System
+.DS_Store
+.vscode/
+*.log
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+venv/
+__pycache__/
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+
+# Large data files
+Server/npy_files/*.npy
+
+# Large files
+*.h5
+*.pth
+*.npy
+*.npz
+*.pkl
+Server/models/
+Server/npy_files/
+__pycache__/
+.DS_Store
