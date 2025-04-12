@@ -12,10 +12,17 @@ import torch.nn.functional as F
 from DrawingClassifier import DrawingClassifier
 
 app = Flask(__name__, static_folder='../client/dist')
-# Apply CORS to the entire app with a simpler configuration
-CORS(app, origins=["http://localhost:5173"], 
-     methods=["GET", "POST", "OPTIONS"],
-     allow_headers=["Content-Type"])
+# Update CORS to allow both development and production domains
+CORS(app, origins=[
+    "http://localhost:5173",                                # Development
+    "https://drawingclassifier.jonasanders1.com",          # Your subdomain
+    "https://www.drawingclassifier.jonasanders1.com",      # www subdomain variant
+    "https://jonasanders1.com",                            # Main domain
+    "https://www.jonasanders1.com"                         # www main domain
+], methods=["GET", "POST", "OPTIONS"], 
+   allow_headers=["Content-Type", "Authorization"],
+   expose_headers=["Access-Control-Allow-Origin"],
+   supports_credentials=True)
 
 # Update classes to match the order used in training
 classes = ['airplane', 'bird', 'car', 'cat', 'circle', 
